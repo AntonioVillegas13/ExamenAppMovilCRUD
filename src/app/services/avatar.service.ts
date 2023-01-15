@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import { addDoc, doc, docData, Firestore, setDoc,collection, GeoPoint } from '@angular/fire/firestore';
+import { addDoc, doc, docData, Firestore, setDoc, collection, collectionData,deleteDoc } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import {
   getDownloadURL,
   ref,
@@ -34,7 +35,17 @@ export class AvatarService {
     private auth: Auth,
     private firestore: Firestore,
     private storage: Storage
-  ) {}
+  ) { }
+
+  getNotes(): Observable<Registro[]> {
+    const notesRef = collection(this.firestore, 'Censados');
+    return collectionData(notesRef, { idField: 'id'}) as Observable<Registro[]>;
+  }
+  
+  deleteNote(registro: Registro) {
+    const noteDocRef = doc(this.firestore, `Censados/${registro.id}`);
+    return deleteDoc(noteDocRef);
+  }
 
   getUserProfile() {
     const user = this.auth.currentUser;
@@ -42,7 +53,7 @@ export class AvatarService {
     return docData(userDocRef);
   }
 
-   addRegister(registro: Registro){
+  addRegister(registro: Registro) {
     //setDoc()
     const notesRef = collection(this.firestore, 'Censados');
     console.log("REGISTRANDO USUARIO . . . . .")

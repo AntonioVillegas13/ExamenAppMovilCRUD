@@ -3,7 +3,7 @@ import { Registro } from './../services/avatar.service';
 import { Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { AvatarService } from '../services/avatar.service';
@@ -17,6 +17,7 @@ import { Geolocation } from '@capacitor/geolocation';
 export class HomePage implements OnInit{
   profile = null;
   registros: Registro[] = [];
+  registro:Registro
   credentials: FormGroup;
   longitud1:number;
   latitud1:number; 
@@ -27,11 +28,20 @@ export class HomePage implements OnInit{
     private router: Router,
     private loadingController: LoadingController,
     private alertController: AlertController,
+    private modalCtrl: ModalController
+
+
+   
+
     //private firestore: FirestoreService
   ) {
-    this.avatarService.getUserProfile().subscribe((data) => {
-      this.profile = data;
-    });
+    this.avatarService.getNotes().subscribe((data)=>{
+      this.registros=data
+      console.log(data)
+    })
+    // this.avatarService.getUserProfile().subscribe((data) => {
+    //   this.profile = data;
+    // });
   }
   
   // Easy access for form fields
@@ -68,6 +78,11 @@ export class HomePage implements OnInit{
       
     });
   }
+  async deleteNote() {
+    await this.avatarService.deleteNote(this.registro)
+    this.modalCtrl.dismiss();
+  }
+
  
   async addRegister() {
     
