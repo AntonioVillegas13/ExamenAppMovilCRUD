@@ -8,7 +8,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { AuthService } from '../services/auth.service';
 import { AvatarService } from '../services/avatar.service';
 import { Geolocation } from '@capacitor/geolocation';
-
+import { ModalComponent } from '../modal/modal.component';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -82,7 +82,16 @@ export class HomePage implements OnInit{
     await this.avatarService.deleteNote(this.registro)
     this.modalCtrl.dismiss();
   }
+ async openNote(registro: Registro) {
+    const modal = await this.modalCtrl.create({
+      component: ModalComponent,
+      componentProps: { id: registro.id },
+      breakpoints: [0, 0.5, 0.8],
+      initialBreakpoint: 0.8
+    });
 
+    await modal.present();
+  }
  
   async addRegister() {
     
